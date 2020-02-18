@@ -17,7 +17,7 @@
                 <b-nav-item class="item" @click="navigate('schedule')"> <i class="fas fa-calendar-alt"></i> My Schedule</b-nav-item>
                 <b-nav-item class="item" @click="navigate('chats')"> <i class="fas fa-envelope"></i> Messages</b-nav-item>
                 <b-nav-item class="item" @click="navigate('profile')"><i class="fas fa-user"></i> Profile</b-nav-item>
-                <b-nav-item class="item" @click="navigate('logout')"><i class="fas fa-power-off"></i> Logout</b-nav-item>
+                <b-nav-item class="item" @click.prevent="navigate('logout')"><i class="fas fa-power-off"></i> Logout</b-nav-item>
                 <!-- <b-nav-item-dropdown text="Account" right>
                     <b-dropdown-item href="#">interpreter</b-dropdown-item>
                     <b-dropdown-item href="#">Interpreter</b-dropdown-item>
@@ -29,18 +29,47 @@
 </template>
 
 <script>
+import nativeToast from 'native-toast'
+import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'BusinessNavbar',
-
+    computed: {
+        ...mapGetters(['loggedUser', 'error'])
+    },
     methods: {
+        ...mapActions(['logoutUser']),
         navigate(link) {
             if(link == 'logout') {
-                this.$router.push({path: '/'})    
+                this.logoutUser();
             }
             else {
                 this.$router.push({path: '/business/'+link})
             }
             
+        },
+        notification(type, msg) {
+            nativeToast({
+                message: msg,
+                position: 'north-east',
+                // Self destroy in 5 seconds
+                timeout: 5000,
+                type: type
+            })
+        }
+    },
+
+    watch: {
+        loggedUser(val) {
+            if(val == null) {
+                console.log("Logout k")
+                this.notification("success", "Logged Out!")
+                this.$router.push({path: '/login'})
+            }
+        },
+        error(val) {
+            if(val) {
+                this.notification("error", val)
+            }
         }
     }
 }
@@ -53,7 +82,7 @@ export default {
     }
     .item, .navbar-light .navbar-nav .nav-link, .dropdown {
     
-        font-size: 15px !important;
+        font-size: 14px !important;
         color: #000 !important;
         margin-right: 10px;
         font-weight: bold;

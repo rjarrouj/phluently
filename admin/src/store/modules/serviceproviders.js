@@ -18,7 +18,7 @@ const getters = {
 const actions = {
 
 fetchAllServiceProviders({commit}) {
-     firebase.database().ref('users').orderByChild('type').equalTo('Interpreter').on('value', snapshot => {
+     firebase.database().ref('users').orderByChild('type').equalTo('interpreter').on('value', snapshot => {
             commit('setAllServiceProviders', snapshot.val())
         }
     )
@@ -30,6 +30,17 @@ updateUsers({commit},payload){
     firebase.database().ref('users').child(id).update(payload)
     .then(()=>{
         commit("setNotifications",{message:'User updated successfully',type:'success'})
+     })
+    .catch(error=>{
+        commit("setNotifications",{message:error.message,type:'error'})
+    })
+},
+blockUser({commit},payload){
+    let id=payload.id
+    delete payload.id
+    firebase.database().ref('users').child(id).update({status:'blocked'})
+    .then(()=>{
+        commit("setNotifications",{message:'User blocked successfully',type:'success'})
      })
     .catch(error=>{
         commit("setNotifications",{message:error.message,type:'error'})

@@ -10,10 +10,10 @@
                             <div class="my-4">
                                 <b-tabs content-class="mt-3" :justified="true" class="jobs">
                                     <b-tab title="Open Jobs">
-                                        <NewJobs />
+                                        <NewJobs :title="false"/>
                                     </b-tab>
                                     <b-tab title="Active Jobs">
-                                        <ActiveJobs />
+                                        <ActiveJobs :title="false"/>
                                     </b-tab>
                                     <b-tab title="Completed Jobs">
                                         <CompletedJobs />

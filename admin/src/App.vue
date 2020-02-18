@@ -24,8 +24,8 @@ watch:{
       this.notifyVue(this.notifications.message,this.notifications.type)
    }
  },
- loggedUser() {
-   if(this.loggedUser!=null){
+ authedUser() {
+   if(this.authedUser!=null){
      this.$router.push({path:'/admin/dashboard'})
 
    }
@@ -37,19 +37,23 @@ watch:{
  }
 },
 computed:{
-  ...mapGetters(['notifications','loggedUser'])
+  ...mapGetters(['notifications','authedUser'])
 },
 created() {
+      this.$store.dispatch("fetchAllPayments")
       this.$store.dispatch("fetchAllServiceProviders")
       this.$store.dispatch("fetchAllClients")
       this.$store.dispatch("fetchAllJobs")
-      this.$store.dispatch("fetchAllPayments")
       this.$store.dispatch("fetchUnApprovedUsers")
       this.$store.dispatch("fetchAllCategories")
+      this.$store.dispatch("fetchAllCertifications")
       this.$store.dispatch("fetchProfileChanges")
-      if(localStorage.getItem("loggedUser")!=null){
+      this.$store.dispatch("fetchAllLanguages")
+
+      
+      if(localStorage.getItem("authedUser")!=null){
         console.log("not null")
-        this.$store.commit("setLoggedUser",JSON.parse(localStorage.getItem("loggedUser")))
+        this.$store.commit("setauthedUser",JSON.parse(localStorage.getItem("authedUser")))
       }
       else{
         console.log("nulls")
@@ -63,25 +67,27 @@ created() {
 
 @import url('https://fonts.googleapis.com/css?family=Encode+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-#app {
-  font-family: 'Roboto', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body {
+  font-family: 'Roboto', 'sans-serif' !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
   scroll-behavior: smooth !important;
 }
 b{
   font-weight:bold !important;
 }
 sidebar-link,p{
-  font-family: 'Encode Sans', sans-serif !important;
+  font-family: 'Encode Sans', 'sans-serif' !important;
 }
 .native-toast-success{
   background-color:#007bff !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Encode Sans', sans-serif !important;
+  font-family: 'Noto Sans', sans-serif !important;
+  font-weight: 600 !important;
 }
+
 /* .category{
   font-size:13px !important;
 } */

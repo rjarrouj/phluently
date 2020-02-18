@@ -24,7 +24,7 @@
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <md-table-cell md-label="Name" md-sort-by="experience">{{ item.first_name }} {{item.last_name}}</md-table-cell>
-                    <md-table-cell md-label="Email" md-sort-by="email">{{ item.email }}</md-table-cell>
+                    <md-table-cell md-label="Location" md-sort-by="location">{{ item.location }}</md-table-cell>
 
                     <md-table-cell md-label="Action" md-sort-by="action">  
                         <md-button class="md-dense md-raised md-primary btn-sm"  @click="setUser(item)">View</md-button>
@@ -38,17 +38,17 @@
                    <b-container fluid >
                      <div class="row">
                        <!-- <div class="col-md-12 "> -->
-                         <div class="col-md-6">
+                         <!-- <div class="col-md-6">
                           <h6> <b>Email</b>  </h6>
                         </div>
                         <div class="col-md-6">
                           <p>{{selected_user.email}}</p> 
-                        </div>
+                        </div> -->
                         <div class="col-md-6 mt-2">
                           <h6> <b>Languages</b>  </h6>
                         </div>
                         <div class="col-md-6 mt-2">
-                         <p>{{selected_user.languages}}</p> 
+                         <p class="ml-1 badge badge-primary" v-for="(item,i) in selected_user.languages" :key="i">{{item}}</p> 
                         </div>
                        <div class="col-md-6 mt-2">
                         <h6><b>Location </b> </h6> 

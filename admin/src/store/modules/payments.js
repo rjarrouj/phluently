@@ -8,6 +8,12 @@ const getters = {
     payments: (state) => {
         return state.payments
     },
+    paid_payments: (state) => {
+        return state.payments.filter(payment_item=>payment_item.status=='paid')
+    },
+    pending_payments: (state) => {
+        return state.payments.filter(payment_item=>payment_item.status=='pending')
+    }
 };
 
 const actions = {

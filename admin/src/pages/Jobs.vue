@@ -22,10 +22,11 @@
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <!-- <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell> -->
-                    <md-table-cell md-label="Created on" md-sort-by="status">{{ item.created_on }}</md-table-cell>
+                    <!-- <md-table-cell md-label="Created on" md-sort-by="status">{{ item.created_on }}</md-table-cell> -->
                     <md-table-cell md-label="Created By" md-sort-by="created-by">{{ getJobCreator(item.created_by) }}</md-table-cell>
                     <!-- <md-table-cell md-label="Status" md-sort-by="status">{{ item.status }}</md-table-cell> -->
-                    <md-table-cell md-label="Status" md-sort-by="status"> <h5><b-badge :variant="item.status=='Opened'? 'primary':'success'">{{ item.status }}</b-badge></h5> </md-table-cell>
+                    <md-table-cell md-label="Status" md-sort-by="status"> <h5><b-badge :variant="item.status=='cancelled'? 'danger':'primary'">{{ item.status }}</b-badge></h5> </md-table-cell>
+                    <md-table-cell md-label="Certification" md-sort-by="status"> {{item.certification}} </md-table-cell>
 
                     <md-table-cell md-label="Action" md-sort-by="action">  
                         <md-button class="md-dense md-raised md-primary btn-sm"  @click="setUser(item)">View</md-button>
@@ -34,45 +35,53 @@
                 </md-table>
                  <b-modal id="modal-1"  hide-footer>
                    <template v-slot:modal-header>
-                      <h5 class="ml-auto mr-auto"> <b>Job Categories </b></h5>
+                      <h5 class="ml-auto mr-auto"> <b>Jobs </b></h5>
                     </template>
                    <b-container >
                      <div class="row">
                        <div class="col-md-6">
-                        <h6> <b>Created on </b> </h6>
+                        <h6> <b>Accepted By </b> </h6>
+                       </div>
+                       <div class="col-md-6" v-if="selected_job!=''">
+                         <!-- {{selected_job.accepted_by}} -->
+                        <p>{{ service_providers.find(it=>it.id==selected_job.accepted_by).first_name  }}</p> 
+                       </div>
+                       
+                       <!-- <div class="col-md-6">
+                        <h6> <b>Certification </b> </h6>
                        </div>
                        <div class="col-md-6">
-                        <p>{{selected_user.created_on}}</p> 
-                       </div>
+                        <p>{{selected_job.certification}}</p> 
+                       </div> -->
                        <div class="col-md-6 mt-2">
                         <h6> <b>Created By </b> </h6>
                        </div>
                        <div class="col-md-6 mt-2">
-                        <p>{{getJobCreator(selected_user.created_by)}}</p> 
+                        <p>{{getJobCreator(selected_job.created_by)}}</p> 
                        </div>
                        <div class="col-md-6 mt-2">
                         <h6><b>Type</b>   </h6> 
                        </div>
                        <div class="col-md-6 mt-2">
-                        <p>{{selected_user.type}} </p> 
+                        <p>{{selected_job.type}} </p> 
                        </div>
                        <div class="col-md-6 mt-2">
                         <h6> <b>Status </b> </h6> 
                        </div>
                        <div class="col-md-6 mt-2">
-                         <p>{{selected_user.status}}</p>
+                         <p>{{selected_job.status}}</p>
                        </div>
                        <div class="col-md-6 mt-2">
                         <h6><b>Location </b> </h6> 
                        </div>
                        <div class="col-md-6 mt-2">
-                        <p>{{selected_user.location}}</p> 
+                        <p>{{selected_job.location}}</p> 
                        </div>
                        <div class="col-md-6 mt-2">
                         <h6><b>Description</b> </h6> 
                        </div>
                        <div class="col-md-6 mt-2">
-                       <p>{{selected_user.description}}</p> 
+                       <p>{{selected_job.description}}</p> 
                        </div>
                      </div>
                    </b-container>
@@ -114,7 +123,7 @@ const toLower = text => {
 export default {
     data: () => ({
       search: null,
-      selected_user:'',
+      selected_job:'',
       searched: [],
       showDialog: false,
     }),
@@ -135,7 +144,7 @@ export default {
 
     },
     computed:{
-      ...mapGetters({jobs:'jobs',users:'clients'})
+      ...mapGetters({jobs:'jobs',users:'clients',service_providers:'service_providers'})
     },
     methods: {
       getJobCreator(id) {
@@ -148,7 +157,7 @@ export default {
         }
       },
       setUser(item){
-        this.selected_user=item
+        this.selected_job=item
         this.$bvModal.show('modal-1')	
       },
       hide(){

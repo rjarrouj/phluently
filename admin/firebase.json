@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "phluently-admins",
     "public": "dist",
     "ignore": [
       "firebase.json",

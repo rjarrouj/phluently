@@ -2,9 +2,8 @@
     <div id="dashboard">
         <BusinessNavbar />
         <div class="container-fluid">
-            <!-- -->
             <div class="row ml-1 mr-1 my-4" style="border:1px solid #dcdcdc" >
-                <div class="col-md-3 pl-0">
+                <div class="col-md-3 pl-0 pr-0">
                     <div class="inbox_people">
                         <div class="headind_srch">
                             <div class="recent_heading">
@@ -12,7 +11,7 @@
                             </div>
                             <div class="srch_bar">
                                 <div class="stylish-input-group">
-                                    <input type="text" class="search-bar" placeholder="Search">
+                                    <input type="text" class="search-bar"  placeholder="Search" v-model="search" v-on:keydown="filter_name">
                                     <span class="input-group-addon">
                                     <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
                                     </span>
@@ -20,40 +19,14 @@
                             </div>
                         </div>
                         <div class="inbox_chat">
-                            <div class="chat_list active_chat">
+                            <div v-for="(users,i) in  getMessagedUsers"   v-bind:key="i" class="chat_list active_chat" @click="fillProfile(users)">
                                 <div class="chat_people">
-                                    <div class="chat_img"> <img class="rounded-circle" style="height:2rem;" src="https://ptetutorials.com/images/user-profile.png" alt="Anika"> </div>
+                                    <div class="chat_img"> <img class="rounded-circle" style="height:2rem;" :src="users.profile_image!=null? users.profile_image:'https://ptetutorials.com/images/user-profile.png'" alt="Anika"> </div>
                                     <div class="chat_ib">
-                                        <h5>Storm Trooper  <span class="chat_date">2019/06/06</span></h5>
+                                        <h5>{{users.first_name}}  <span class="chat_date">{{chatdate(users.id).date}}</span></h5>
                                         <div class="row">
                                             <div class="col-md-9">
-                                                <p>Last Demo Message</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"> <img class="rounded-circle" style="height:2rem;" src="https://ptetutorials.com/images/user-profile.png" alt="Anika"> </div>
-                                    <div class="chat_ib">
-                                        <h5>Anakin   <span class="chat_date">2019/06/06</span></h5>
-                                        <div class="row">
-                                            <div class="col-md-9">
-                                                <p>Last Demo Message</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"> <img class="rounded-circle" style="height:2rem;" src="https://ptetutorials.com/images/user-profile.png" alt="Anika"> </div>
-                                    <div class="chat_ib">
-                                        <h5>Obi Wan   <span class="chat_date">2019/06/06</span></h5>
-                                        <div class="row">
-                                            <div class="col-md-9">
-                                                <p>Last Demo Message</p>
+                                                <p>{{chatdate(users.id).message}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -62,70 +35,73 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div id="msg_containers" class="msg_history">
-                        <div>
-                            <div class="incoming_msg mt-2">
+                <div  :class="this.selected_user!='' ? 'col-md-6 pl-0 pr-0 bg-white' : 'col-md-9 pl-0 pr-0 bg-white'" >
+                    <div v-if="selected_messages.length>0" id="msg_containers" class="msg_history">
+                      <div  v-for="(items,i) in selected_messages" :key="i">
+                            <div v-if="items.sender_id!=lc_loggeduser.id" class="incoming_msg mt-2">
                                 <div class="received_msg">
                                     <div class="received_withd_msg">
-                                        <p>Your Message</p>
-                                        <span class="time_date"> 2019/11/11</span></div>
+                                        <p>{{items.message}}</p>
+                                        <span class="time_date"> {{items.date}}</span></div>
                                 </div>
                             </div>
-                            <div class="outgoing_msg">
+                            <div v-else class="outgoing_msg">
                                 <div class="sent_msg mr-1">
-                                    <p>Outrageously OfFending message</p>
-                                    <span class="time_date"> 2019/11/11</span> </div>
+                                    <p>{{items.message}}</p>
+                                    <span class="time_date"> {{items.date}}</span> </div>
                             </div>
                         </div>
                     </div>
-                    <div class="type_msg">
+                    <div v-else id="msg_containers " class="msg_history">
+                        <h6 class="text-danger mt-2">No Messages</h6>
+                    </div>
+                    <div v-if="selected_user!=''" class="type_msg">
                         <div class="input_msg_write">
-                            <input type="text" class="write_msg ml-1 mr-1" style="border:none !important;"   placeholder="Type a message" />
-                            <button class="msg_send_btn"  type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                            <input type="text" class="write_msg ml-1 mr-1" style="border:none !important;" @keyup.enter="sendMessage()" v-model="message"   placeholder="Type a message" />
+                            <button @click="sendMessage()" class="msg_send_btn"  type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3" style="border-left:1px solid #dcdcdc">
-                    <b-card tag="article" style="-webkit-box-shadow:none;border:none;" class="mb-2">
+                <div v-if="selected_user!=''" class="col-md-3 pl-0 pr-0 bg-white" style="border-left:1px solid #dcdcdc">
+                    <b-card   tag="article" style="-webkit-box-shadow:none;border:none;" class="mb-2">
                         <template v:slot="header">
                             <h4 class="text-center"> <b> About </b></h4>
                         </template>
                         <b-card-body>
                             <div class="photo-container text-center">
-                                <img class="pic" src="https://ptetutorials.com/images/user-profile.png" alt="" />
+                                <b-img class="pic" rounded="circle" v-bind="userImage" :src="selected_user.profile_image!=null ? selected_user.profile_image: 'https://ptetutorials.com/images/user-profile.png'" alt="" ></b-img>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h6 class="users text-center">Storm Troopers</h6>
+                                    <h6 class="users text-center">{{selected_user!='' ? selected_user.first_name:'NA'}} {{selected_user.last_name}}</h6>
                                 </div>
                                 <div class="col-md-12">
-                                    <h6 class="users text-muted text-center" style="margin-top:-15px;">Medical Services</h6>
+                                    <h6 class="users text-muted text-center" style="margin-top:-15px;">{{selected_user!='' ? selected_user.email :'NA'}}</h6>
                                 </div>
 
                             </div>
                             <div class="row text-center">
                                 <div class="col-md-6">
-                                    <span>Certified</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <span><strong>CHI</strong></span>
-                                </div>
-                            </div>
-                            <div class="row text-center mt-4">
-                                <div class="col-md-6 pl-0 pr-0">
-                                    <span>Experience</span>
-                                </div>
-                                <div class="col-md-6 pr-0 pl-0">
-                                    <span><strong>0-5 years</strong></span>
-                                </div>
-                            </div>
-                            <div class="row text-center mt-4">
-                                <div class="col-md-6 pl-0 pr-0">
                                     <span>Location</span>
                                 </div>
+                                <div class="col-md-6">
+                                    <span><strong>{{selected_user!='' ? selected_user.location :'NA'}}</strong></span>
+                                </div>
+                            </div>
+                            <div class="row text-center mt-4">
+                                <div class="col-md-6 pl-0 pr-0">
+                                    <span>Type</span>
+                                </div>
                                 <div class="col-md-6 pr-0 pl-0">
-                                    <span><strong>New York</strong></span>
+                                    <span><strong>{{selected_user!='' ? selected_user.type :'NA'}}</strong></span>
+                                </div>
+                            </div>
+                            <div class="row text-center mt-4">
+                                <div class="col-md-6 pl-0 pr-0">
+                                    <span>Contact</span>
+                                </div>
+                                <div class="col-md-6 pr-0 pl-0">
+                                    <span><strong>{{selected_user!='' ? selected_user.contact :'NA'}}</strong></span>
                                 </div>
                             </div>
                             <div class="row text-center mt-4">
@@ -133,7 +109,9 @@
                                     <span>Language</span>
                                 </div>
                                 <div class="col-md-6 pr-0 pl-0">
-                                    <span><strong>English</strong></span>
+                                    <span v-if="selected_user==''"><strong>{{'NA'}}</strong></span>
+                                    <b-badge v-else class="mr-1" variant="dark" v-for="(lang, index) in selected_user.languages" :key="index">{{ lang }} </b-badge>
+                                    
                                 </div>
                             </div>
                         </b-card-body>
@@ -149,13 +127,166 @@
 <script>
 import BusinessNavbar from '@/components/business/BusinessNavbar.vue'
 import Footer from '@/components/Footer.vue'
+import {mapGetters} from 'vuex'
+import moment from 'moment'
+import nativeToast from 'native-toast'
 export default {
     name: "Dashboard",
     components: {
         BusinessNavbar,
         Footer
-    }
-    
+    },
+    created(){
+        this.filters=this.users
+        this.lc_loggeduser=JSON.parse(localStorage.getItem('loggedUser'));
+
+
+    },
+    mounted(){
+        this.filters=this.users
+        this.lc_loggeduser=JSON.parse(localStorage.getItem('loggedUser'));
+
+    },
+    data(){
+        return{
+            search:'',
+            lc_loggeduser:'',
+            selected_user:'',
+            new_msg_connection:false,
+            message:'',
+            userImage: { blank: false, blankColor: '#777', width: 100, height: 100, class: ''}
+
+        }
+    },
+    methods:{
+        
+        sendMessage(){
+            let new_messages=1;
+            if(this.message!='') {
+            var dates = new Date();  
+            var hours = dates.getHours();
+            var minutes = dates.getMinutes();
+            var last_time = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + dates.getSeconds()).slice(-2);  
+            var last_date =dates.getFullYear() +'-'+ ('0' + (dates.getMonth()+1)).slice(-2) + '-' + ('0' + dates.getDate()).slice(-2) ;
+
+            let date=moment().format('LT')+" | "+moment().format('D MMM') ;
+            if(this.lc_loggeduser.message_connections==null) {
+                console.log("sending message to a new person")
+                this.new_msg_connection=true
+            }
+            else{
+                let exists=Object.keys(this.lc_loggeduser.message_connections).find(key=>this.lc_loggeduser.message_connections[key].id==this.selected_user.id)
+                console.log("connections not empty but same connections appear")
+                if(exists==null) {
+                this.new_msg_connection=true
+                }
+            }
+            //if selected user has message connections and you 
+            // want to check how many new messages you have with 
+            // this guy
+            if(this.selected_user.message_connections!=null){
+            let yourself=Object.keys(this.selected_user.message_connections).find(key=>this.selected_user.message_connections[key].id==this.lc_loggeduser.id)
+            //how many msgs i hv with this guy 
+            console.log(yourself)
+            if(yourself!=null){
+                if(this.selected_user.message_connections[yourself].new_messages!=null) {
+                new_messages=this.selected_user.message_connections[yourself].new_messages+1
+                this.selected_user.message_connections[yourself].new_messages=new_messages
+                }
+            }
+                
+            }
+            else {
+                console.log("this guy doesnt have any messages with anybody")
+            }
+
+            let msg_obj={
+            date:date,
+            message:this.message,
+            last_date:last_date,
+            last_time:last_time,
+            receiver_id:this.selected_user.id,
+            sender_id:this.lc_loggeduser.id,
+            message_connection:this.new_msg_connection,
+            new_messages:new_messages
+            }
+            console.log(msg_obj)
+            this.$store.dispatch('sendMessages',msg_obj)
+            this.message=''
+            this.scroller()
+            this.new_msg_connection=false
+            this.search=''
+
+            }
+            else {
+                nativeToast({
+                message: 'Please fill message field',
+                position: 'north-east',
+                timeout: 3000,
+                type: 'error'
+                })
+            }
+            
+        },
+        fillProfile(arg_user) {
+            // if(arg_user.new_messages!=null && arg_user.new_messages>0) {
+            //     let op_user=this.getUsers.find(user=>user.id==arg_user.id)
+            //     op_user.new_messages=0
+            //     this.unsetNewMessages({sender_id:this.lc_loggeduser.id,receiver_id:arg_user.id})
+            // }
+
+            this.selected_user=arg_user;
+            
+            // this.scroller()
+        },
+        scroller(){
+        var container = this.$el.querySelector("#msg_containers"); 
+        this.typed_message=''
+        this.$nextTick(() => {
+            if(container.scrollHeight!=null){
+            container.scrollTop = container.scrollHeight;        
+            }
+            });
+        },
+        chatdate(id){
+        let arrs= this.getMessages.filter(messages_item=>(messages_item.sender_id==this.lc_loggeduser.id && messages_item.receiver_id==id) || (messages_item.receiver_id==this.lc_loggeduser.id && messages_item.sender_id==id)) 
+        if(arrs.length>0){
+            let dt=arrs[arrs.length-1].date.split('|')
+            return {date:dt[1],message:arrs[arrs.length-1].message}
+        }
+        else{
+        return {date:'NA',message:'No messages yet'}
+        }
+        },
+        filter_name() {
+        let arrs=this.users.filter(user_item=>user_item.id!=this.lc_loggeduser.id && user_item.first_name.toLowerCase().includes(this.search.toLowerCase()))
+                if(arrs.length>0){
+                this.filters=arrs
+
+                }
+                else{
+                    this.filters=[]
+                }
+        },
+    },
+    computed:{
+        
+        ...mapGetters({users:'getUsers',getMessages:'getMessages'}),
+        selected_messages() {
+        return this.getMessages.filter(messages_item=>(messages_item.sender_id==this.lc_loggeduser.id && messages_item.receiver_id==this.selected_user.id) || (messages_item.receiver_id==this.lc_loggeduser.id && messages_item.sender_id==this.selected_user.id)) 
+        },
+        getMessagedUsers() {
+        if(this.lc_loggeduser.message_connections!=null) {
+         return Object.keys(this.lc_loggeduser.message_connections).map(key=>{
+              let use=this.filters.find(item=>item.id==this.lc_loggeduser.message_connections[key].id)
+              return {...use,new_messages:this.lc_loggeduser.message_connections[key].new_messages,last_time:this.lc_loggeduser.message_connections[key].last_time,last_date:this.lc_loggeduser.message_connections[key].last_date}
+          })
+        }
+        else {
+          return []
+        }
+    },
+    }    
 }
 </script>
 
@@ -353,5 +484,8 @@ background:#ebebeb;
  /* Handle on hover */	
 ::-webkit-scrollbar-thumb:hover {	
   background: #555; 	
+}
+.write_msg {
+    padding-right: 10px !important;
 }
 </style>

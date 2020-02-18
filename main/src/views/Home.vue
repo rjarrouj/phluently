@@ -90,7 +90,20 @@ export default {
   components: {
     Navbar,
     Footer
-  }
+  },
+
+  created() {
+        const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+        if(loggedUser) {
+            const userType = loggedUser.type;
+            if(userType.toLowerCase() == 'interpreter') {
+                this.$router.push({path: '/interpreter/dashboard'})
+            }
+            if(userType.toLowerCase() == 'business') {
+                this.$router.push({path: '/business/dashboard'})
+            }
+        }
+    },
   
 }
 </script>

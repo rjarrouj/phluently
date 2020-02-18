@@ -15,17 +15,27 @@
                     </div>
 
                     <md-field md-clearable class="md-toolbar-section-end">
-                    <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
+                    <md-field>
+                    <label for="movie">Filter</label>
+                      <md-select @md-selected="selectFilter"  v-model="filter" name="movie" id="movie">
+                        <md-option value="all">All</md-option>
+                        <md-option value="pending">Pending</md-option>
+                        <md-option value="godfather-ii">Completed</md-option>
+                      </md-select>
+                    </md-field>
+                    <!-- <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" /> -->
                     </md-field>
                 </md-table-toolbar>
 
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  
-                    <md-table-cell md-label="Paid By" md-sort-by="category_name">{{ getPaymentUser(item.paid_by) }}</md-table-cell>
+                    <md-table-cell md-label="Paid To" md-sort-by="category_name">{{ getPaymentUsers(item.interpreter_id) }}</md-table-cell>
+                    <md-table-cell md-label="Paid By" md-sort-by="category_name">{{ getPaymentUser(item.business_id) }}</md-table-cell>
+                    <!-- <md-table-cell md-label="Paid To" md-sort-by="category_name">{{ getPaymentUser(item.interpreter_id) }}</md-table-cell> -->
                     <md-table-cell md-label="Amount" md-sort-by="category_name">{{ item.amount }}</md-table-cell>
+                    <!-- <md-table-cell  md-label="Time" md-sort-by="time"> {{item.payment_time.split(' ')[0]}} </md-table-cell> -->
                     <md-table-cell  md-label="Status" md-sort-by="category_name"> <h5><b-badge :variant="item.status=='pending'? 'danger':'primary'">{{ item.status }}</b-badge></h5> </md-table-cell>
-
+                   
                     <!-- <md-table-cell md-label="Action" md-sort-by="action">   -->
                         <!-- <md-button class="md-dense md-raised md-primary btn-sm"  @click="setUser(item)">View</md-button> -->
                     <!-- </md-table-cell> -->
@@ -78,15 +88,12 @@ export default {
     data: () => ({
       search: null,
       selected_user:'',
+      filter:'all',
       searched: [],
       showDialog: false,
     }),
     watch:{
-      clients(){
-        if(this.clients.length>0){
-          console.log(this.clients)
-        }
-      },
+      
       payments(){
         if(this.payments.length>0){
         this.searched = this.payments
@@ -97,14 +104,33 @@ export default {
     },
     
     computed:{
-      ...mapGetters({payments:'payments',users:'clients'})
+      ...mapGetters({payments:'payments',users:'clients',service_providers:'service_providers',paid_payments:'paid_payments',pending_payments:'pending_payments'})
     },
     methods: {
+      selectFilter(e){
+        if(this.filter=='pending'){
+          this.searched=this.pending_payments
+        }
+        else if(this.filter=='completed'){
+          this.searched=this.paid_payments
+        }
+        else{
+          this.searched=this.payments
+        }
+
+      },
+      getPaymentUsers(id) {
+        let temp_user=this.service_providers.find(user_item=>user_item.id==id)
+        if(temp_user==null){
+          return 'NA'
+        }
+        else{
+        return temp_user.first_name + ' ' +temp_user.last_name
+        }
+        // return temp_user.first_name
+      },
       getPaymentUser(id) {
-        console.log(id)
-        console.log(this.users)
         let temp_user=this.users.find(user_item=>user_item.id==id)
-        console.log(temp_user)
         if(temp_user==null){
           return 'NA'
         }

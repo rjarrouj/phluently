@@ -10,11 +10,11 @@
       </sidebar-link>
       <sidebar-link to="/admin/service-providers">
         <md-icon>supervised_user_circle</md-icon>
-        <p>Service Providers</p>
+        <p>Interpreters</p>
       </sidebar-link>
       <sidebar-link to="/admin/clients">
         <md-icon>assignment_ind</md-icon>
-        <p>Clients</p>
+        <p>Businesses</p>
       </sidebar-link>
       <sidebar-link to="/admin/jobs">
         <md-icon>work</md-icon>
@@ -28,6 +28,14 @@
         <md-icon>category</md-icon>
         <p>Categories</p>
       </sidebar-link>
+       <sidebar-link to="/admin/certifications">
+        <md-icon>book</md-icon>
+        <p>Update Password</p>
+      </sidebar-link>
+       <sidebar-link to="/admin/languages">
+        <md-icon>translate</md-icon>
+        <p>Languages</p>
+      </sidebar-link>
       <sidebar-link to="/admin/pending-approvals">
         <md-icon>verified_user</md-icon>
         <p>Approvals</p>
@@ -35,6 +43,14 @@
       <sidebar-link to="/admin/profile-changes">
         <md-icon>update</md-icon>
         <p>Profile Changes</p>
+      </sidebar-link>
+      <sidebar-link to="/admin/privacy-policy">
+        
+        <p><i class="fa fa-user-secret"></i> Privacy Policy</p>
+      </sidebar-link>
+      <sidebar-link to="/admin/terms-and-use">
+        
+        <p><i class="fa fa-universal-access"></i> Terms of Use</p>
       </sidebar-link>
       <!-- <sidebar-link to="/revenue">
         <md-icon>dashboard</md-icon>

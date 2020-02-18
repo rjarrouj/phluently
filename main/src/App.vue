@@ -10,8 +10,50 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import nativeToast from 'native-toast'
+import firebase from 'firebase'
 export default {
-  
+  created() {
+    this.$store.dispatch('fetchDevTokens');
+    this.$store.dispatch('fetchAllJobs');
+    this.$store.dispatch('fetchJobTypes');
+    this.$store.dispatch('fetchLanguages');
+    this.$store.dispatch('fetchRegisteredUsers');
+    this.$store.dispatch('fetchMessages');
+  },
+  computed:{
+    ...mapGetters(['notification','loggedUser','fireVapidkey'])
+
+  },
+  watch:{
+    loggedUser(val){
+        if(val!=null) {
+          let currentToken=localStorage.getItem("token")
+          if(val.type=='interpreter') {
+            let obj={user_id:this.loggedUser.id,token:currentToken,categories:this.loggedUser.categories}
+            this.$store.dispatch('pushDeviceTokens',obj)
+          }
+          else {
+            let obj={user_id:this.loggedUser.id,token:currentToken}
+            this.$store.dispatch('pushDeviceTokens',obj)
+          }
+
+        }
+    },
+    notification (val){
+      if(val){
+          nativeToast({
+          message: this.notification.message,
+          position: 'north-east',
+          timeout: 5000,
+          type: this.notification.type
+        })
+        this.$store.commit("unSetNotifications")
+      }
+
+    }
+  }
 }
 </script>
 

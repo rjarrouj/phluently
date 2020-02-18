@@ -52,13 +52,6 @@
 
                        </div>
                        <div class="col-md-6 mt-2">
-                        <h6> <b>Certifications</b>  </h6>
-                       </div>
-                       <div class="col-md-6 mt-2">
-                        <p>{{selected_user.certifications}}</p>
-
-                       </div>
-                       <div class="col-md-6 mt-2">
                         <h6> <b>Languages</b>  </h6>
                         
                        </div>
@@ -77,7 +70,7 @@
                    </b-container>
                    <b-container fluid class="mt-4">
                       <md-button class="ml-2 md-dense md-raised md-primary pull-right" @click="lc_changeUserStatus('active');hide">Approve</md-button>
-                      <md-button class="ml-2 md-dense md-raised md-danger pull-right" @click="lc_changeUserStatus('reject');hide">Reject</md-button>
+                      <md-button class="ml-2 md-dense md-raised md-danger pull-right" @click="lc_changeUserStatus('rejected');hide">Reject</md-button>
 
                    </b-container>
                 </b-modal>

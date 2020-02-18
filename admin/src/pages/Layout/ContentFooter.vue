@@ -25,9 +25,9 @@
       </nav>
       <div class="copyright text-center">
         &copy; {{ new Date().getFullYear() }}
-        <a href="#" 
-          >CR Productions</a
-        >, made with <i class="fa fa-heart heart"></i> for a better web
+         Phluently, Inc. All rights reserved.
+          
+          <!-- , made with <i class="fa fa-heart heart"></i> for a better web -->
       </div>
     </div>
   </footer>

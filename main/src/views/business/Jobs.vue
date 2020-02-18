@@ -9,15 +9,14 @@
                             <h3>My Jobs</h3>
                             <div class="my-4">
                                 <b-tabs content-class="mt-3" :justified="true" class="jobs">
-                                    
+                                    <b-tab title="Pending Jobs">
+                                        <PendingJobs :title="false" />
+                                    </b-tab>
                                     <b-tab title="Active Jobs">
-                                        <ActiveJobs />
+                                        <ActiveJobs :title="false"/>
                                     </b-tab>
                                     <b-tab title="Completed Jobs">
-                                        <CompletedJobs />
-                                    </b-tab>
-                                    <b-tab title="Rejected Jobs">
-                                        <RejectedJobs />
+                                        <CompletedJobs :title="false"/>
                                     </b-tab>
                                 </b-tabs>
                             </div>
@@ -34,7 +33,7 @@
 import BusinessNavbar from '@/components/business/BusinessNavbar.vue'
 import ActiveJobs from '@/components/business/ActiveJobs.vue'
 import CompletedJobs from '@/components/business/CompletedJobs.vue'
-import RejectedJobs from '@/components/business/RejectedJobs.vue'
+import PendingJobs from '@/components/business/PendingJobs.vue'
 import Footer from '@/components/Footer.vue'
 export default {
     name: "Jobs",
@@ -42,7 +41,7 @@ export default {
         BusinessNavbar,
         ActiveJobs,
         CompletedJobs,
-        RejectedJobs,
+        PendingJobs,
         Footer
     }
 }

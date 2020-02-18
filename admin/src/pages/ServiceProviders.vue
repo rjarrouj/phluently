@@ -6,7 +6,7 @@
       >
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">Manage Service Providers</h4>
+            <h4 class="title">Manage Service Providers <span v-b-modal.new-interpreter style="cursor:pointer;font-size:15px;" class="fa fa-plus pull-right">Add interpreter</span></h4>
             <p class="category">View service providers registered to your applications</p>
           </md-card-header>
           <md-card-content>
@@ -26,9 +26,12 @@
                     <!-- <md-table-cell md-label="ID" md-sort-by="id" >{{ item.id }}</md-table-cell> -->
                     <md-table-cell md-label="Name" md-sort-by="first_name">{{ item.first_name }}</md-table-cell>
                     <md-table-cell md-label="experience" md-sort-by="experience">{{ item.experience }}</md-table-cell>
-                    <md-table-cell md-label="Certifications" md-sort-by="certifications">{{ item.certifications }}</md-table-cell>
+                    <md-table-cell md-label="Status"  md-sort-by="status">
+                      <h5><b-badge :variant="item.status=='active'? 'success':'danger'">{{ item.status }}</b-badge></h5>
+                    </md-table-cell>
                     <md-table-cell md-label="Action" md-sort-by="action">  
                         <md-button class="md-dense md-raised md-primary btn-sm"  @click="setUser(item)">View</md-button>
+                        <md-button class="md-dense md-raised md-danger btn-sm" v-if="item.status!='blocked'"  @click="lc_blockUser(item)">Block</md-button>
                     </md-table-cell>
                 </md-table-row>
                 </md-table>
@@ -53,21 +56,20 @@
                         <b-form-select v-else v-model="selected_user.experience" :options="experience_options"></b-form-select>
 
                        </div>
-                       <div class="col-md-6 mt-2">
+                       <!-- <div class="col-md-6 mt-2">
                         <h6> <b>Certifications</b>  </h6>
                        </div>
                        <div class="col-md-6 mt-2">
                         <p v-if="edit==false">{{selected_user.certifications}}</p>
                         <b-form-select v-else v-model="selected_user.certifications" :options="certifications_options"></b-form-select>
 
-                       </div>
-                       <div class="col-md-6 mt-2">
+                       </div> -->
+                       <!-- <div class="col-md-6 mt-2">
                         <h6> <b>Languages</b>  </h6>
                         
                        </div>
                        <div class="col-md-6 mt-2">
                         <p v-if="edit==false">{{selected_user.languages}}</p> 
-                        <!-- <b-form-select v-else v-model="selected_user.languages" :options="langauge_options"></b-form-select> -->
                           <select style="border:1px solid #ced4da" v-else class="form-control" name="select-yui_3_17_2_1_1567996608600_18564-field">
                   
                                 <option value="Acholi">Acholi</option>
@@ -421,7 +423,7 @@
                                 <option value="Yupik">Yupik</option>
                   
                           </select>
-                       </div>
+                       </div> -->
                        <div class="col-md-6 mt-2">
                         <h6> <b>Location</b>  </h6> 
                        </div>
@@ -547,12 +549,104 @@
         </md-card>
       </div>
 
-      <div
+      <!-- <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
       
-      </div>
+      </div> -->
     </div>
+      <b-modal id="new-interpreter"  hide-footer>
+        <template v-slot:modal-header>
+          <h5 class="ml-auto mr-auto"> <b>Create New Interpreter </b></h5>
+        </template>
+        <b-container fluid >
+          <div class="row">
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">First Name*</label>
+                  <input type="text" name="" v-model="interpreterUser.first_name" placeholder="John" class="form-control" id="">
+              </div>
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">Last Name*</label>
+                  <input type="text" name="" v-model="interpreterUser.last_name" placeholder="Doe" class="form-control" id="">
+              </div>
+          </div>
+
+          <div class="row mt-3">
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">Email*</label>
+                  <input type="text" name="" placeholder="john@gmail.com" v-model="interpreterUser.email" class="form-control" id="">
+              </div>
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">Phone*</label>
+                  <input type="number" min="0" name="" placeholder="+123456789" v-model="interpreterUser.contact" class="form-control" id="">
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col-md-6 col-12 mt-3">
+                  <label for="" class="text-primary">Password*</label>
+                  <input type="text"  placeholder="Your Password" v-model="interpreterPassword" class="form-control" id="">
+              </div>
+              <div class="col-md-6 col-12 mt-3">
+                  <label for="" class="text-primary">Confirm Password*</label>
+                  <input type="text" name="" placeholder="Confirm Password" v-model="interpreterConfirm" class="form-control" id="">
+              </div>
+          </div>
+
+          <div class="row mt-3">
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">Languages*</label>
+                  <select name="" id="" class="form-control" v-model="interpreterUser.languages">
+                      <option value="English">English</option>
+                      <option value="Arabic">Arabic</option>
+                      <option value="Bengali">Bengali</option>
+                      <option value="Urdu">Urdu</option>
+                  </select>
+                  
+              </div>
+              <div class="col-md-6 col-12">
+                  <label for="" class="text-primary">Location*</label>
+                  <select name="" id="" class="form-control" v-model="interpreterUser.location">
+                      <option value="New York">New York</option>
+                      <option value="Texas">Texas</option>
+                      <option value="Washington">Washington</option>
+                      <option value="Los Angeles">Los Angeles</option>
+                  </select>
+              </div>
+              <div class="col-md-6 col-12 mt-3">
+                  <label for="" class="text-primary">Certifications*</label>
+                  <select name="" id="" class="form-control" v-model="interpreterUser.certifications">
+                      <option value="NBCMI">NBCMI</option>
+                      <option value="CCHI">CCHI</option>
+                      <option value="CIP">CIP</option>
+                      <option value="RID">RID</option>
+                  </select>
+                  
+              </div>
+              <div class="col-md-6 col-12 mt-3">
+                  <label for="" class="text-primary">Experience*</label>
+                  <select name="" id="" class="form-control" v-model="interpreterUser.experience">
+                      <option value="0 - 5 Years">0 - 5 Years</option>
+                      <option value="5 - 10 Years">5 - 10 Years</option>
+                      <option value="10 - 15 Years">10 - 15 Years</option>
+                      <option value="15+ Years">15+ Years</option>
+                  </select>
+              </div>
+              
+              <div class="col-md-12 col-12 mt-3">
+                  <label for="" class="text-primary">Additional Information*</label>
+                  <textarea class="form-control" rows="2" v-model="interpreterUser.about" placeholder="Write something about yourself (additional languages, certifications, etc.)"></textarea>
+              </div>
+              <div class="col-md-12 col-12 mt-3">
+                  <button type="submit" class="btn btn-primary btn-block" @click="navigate('interpreter')">Sign Up</button>
+              </div>
+          </div> 
+        </b-container>
+        <!-- <b-container fluid class="mt-4"> -->
+          <!-- <md-button class="ml-2 md-dense md-raised md-primary pull-right">Create</md-button> -->
+          <!-- <md-button class="md-dense md-raised md-primary pull-right" @click="hide('new-interpreter')">Cancel</md-button> -->
+        <!-- </b-container> -->
+    </b-modal>
   </div>
 </template>
 
@@ -573,6 +667,21 @@ const toLower = text => {
 import {mapGetters} from 'vuex'
 export default {
     data: () => ({
+      interpreterUser: {
+          first_name: null,
+          last_name: null,
+          email: null,
+          contact: null,
+          languages: null,
+          location: null,
+          certifications: null,
+          experience: null,
+          about: null,
+          type: "interpreter",
+          status: "pending"
+      },
+      interpreterPassword: null,
+      interpreterConfirm: null,
       experience_options:[
         { value: '0-5 years', text: '0-5 years' },
         { value: '5-10 years', text: '5-10 years' },
@@ -606,6 +715,50 @@ export default {
 
     },
     methods: {
+      navigate(type) {
+          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              let interpreter = this.interpreterUser;
+                if(interpreter.first_name == null || interpreter.last_name == null || interpreter.email == null || interpreter.contact == null || interpreter.languages == null || interpreter.location == null || interpreter.certifications == null || interpreter.experience == null || interpreter.about == null) {
+                this.$store.commit("setNotifications",{message:"All Fields Required!",type:'error'})
+              }
+                else if(!re.test(interpreter.email.toLowerCase())) {
+                  this.$store.commit("setNotifications",{message:"Invalid Email!",type:'error'})
+              }
+                else if(this.interpreterPassword == null){
+                  this.$store.commit("setNotifications",{message:"Please Enter Password!",type:'error'})
+              }
+                else if(this.interpreterConfirm == null) {
+                  this.$store.commit("setNotifications",{message:"Please Confirm Your Password!!",type:'error'})
+              }
+                else if(this.interpreterPassword != this.interpreterConfirm) {
+                  this.$store.commit("setNotifications",{message:"Password Mismatch!",type:'error'})
+              }
+              else {
+                  interpreter.password = this.interpreterPassword;
+                  this.$store.dispatch('createUser',interpreter);
+                  this.interpreterPassword=null,
+                  this.interpreterConfirm=null,
+                  this.interpreterUser={
+                        first_name: null,
+                        last_name: null,
+                        email: null,
+                        contact: null,
+                        languages: null,
+                        location: null,
+                        certifications: null,
+                        experience: null,
+                        about: null,
+                        type: "interpreter",
+                        status: "pending"
+                    }
+              }
+      },
+      
+      lc_blockUser(item){
+        this.$bvModal.hide('modal-1')	
+        console.log(item)
+        this.$store.dispatch("blockUser",item) 
+      },
       setUser(item){
         this.selected_user=item
         this.$bvModal.show('modal-1')	

@@ -8,26 +8,10 @@
                 </div>
                 <div class="col-md-9 col-12 mb-3">
                     <Stats />
-                    <div class="row mt-5">
-                        <div class="col-md-12">
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <h5>New Job Requests - 3</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <NewJobs />
 
-                    <div class="row mt-5">
-                        <div class="col-md-12">
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <h5>Active Jobs - 3</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <ActiveJobs />
                 </div>
             </div>
@@ -43,6 +27,7 @@ import Stats from '@/components/interpreter/Stats.vue'
 import NewJobs from '@/components/interpreter/NewJobs.vue'
 import ActiveJobs from '@/components/interpreter/ActiveJobs.vue'
 import Footer from '@/components/Footer.vue'
+import { mapActions, mapGetters } from 'vuex';
 export default {
     name: "Dashboard",
     components: {
@@ -53,12 +38,45 @@ export default {
         ActiveJobs,
         Footer
     },
+    computed: {
+        ...mapGetters(['fetchJobs']),
+        fetchPendingJobs() {
+            let pending = [];
+            let certification = null;
+            const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+            if(loggedUser) {
+                certification = loggedUser.certifications;
+
+                this.fetchJobs.filter(job => {
+                    if(job.status == 'pending' && job.certification == certification) {
+                        pending.push(job)
+                    }
+                })
+            }
+            return pending;
+        }
+    },
     data() {
         return {
+            fetchedJobs: [],
             image: require('../../assets/profile.jpg'),
             mainProps: { blank: false, blankColor: '#777', width: 100, height: 100, class: 'my-3'},
             userImage: { blank: false, blankColor: '#777', width: 40, height: 40, class: ''}
         }
+    },
+
+    created() {
+        const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+        
+    },
+
+    watch: {
+        fetchJobs(val) {
+            if(val.length > 0) {
+                this.fetchedJobs = [];
+                this.fetchedJobs = val;
+            }
+        },
     }
 }
 </script>

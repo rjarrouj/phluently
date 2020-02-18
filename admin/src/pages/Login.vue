@@ -56,8 +56,8 @@ export default {
        
         
         login:{
-          email:'rabiit@gmail.com',
-          password:'rabbit'
+          email:'',
+          password:''
         }
         
       }

@@ -1,19 +1,3 @@
-// =========================================================
-// * Vue Material Dashboard - v1.2.1
-// =========================================================
-//
-// * Product Page: https://www.creative-tim.com/product/vue-material-dashboard
-// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-// * Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
-//
-// * Coded by Creative Tim
-//
-// =========================================================
-//
-// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from "vue";
 import VueRouter from "vue-router";
 import App from "./App";
@@ -25,6 +9,9 @@ import routes from "./routes/routes";
 import GlobalComponents from "./globalComponents";
 import GlobalDirectives from "./globalDirectives";
 import Notifications from "./components/NotificationPlugin";
+
+import VueApexCharts from 'vue-apexcharts'
+
 
 // MaterialDashboard plugin
 import MaterialDashboard from "./material-dashboard";
@@ -52,14 +39,16 @@ Vue.use(MaterialDashboard);
 Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 Vue.use(Notifications);
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
    //console.log(Vals) requiresAuth &&requiresAuth &&
-  if ( requiresAuth &&  !localStorage.getItem("loggedUser")) {
+  if ( requiresAuth &&  !localStorage.getItem("authedUser")) {
     
       next('/')
-  } else if (requiresAuth && localStorage.getItem("loggedUser")) {
+  } else if (requiresAuth && localStorage.getItem("authedUser")) {
       next()
   } else {
       next()
@@ -67,13 +56,14 @@ router.beforeEach((to, from, next) => {
 })
 
 var firebaseConfig = {
-  apiKey: "AIzaSyCljdwC3fTdj3FwjipHGlfjBRS47LccZ7g",
-  authDomain: "phluently-admin.firebaseapp.com",
-  databaseURL: "https://phluently-admin.firebaseio.com",
-  projectId: "phluently-admin",
-  storageBucket: "phluently-admin.appspot.com",
-  messagingSenderId: "59377314407",
-  appId: "1:59377314407:web:0e71b9a66a182053fc42c2"
+  apiKey: "AIzaSyCCzA4sNodjtL9Lj-DHKE4dKu_bpenE55Y",
+  authDomain: "phluently-768ac.firebaseapp.com",
+  databaseURL: "https://phluently-768ac.firebaseio.com",
+  projectId: "phluently-768ac",
+  storageBucket: "phluently-768ac.appspot.com",
+  messagingSenderId: "882777616957",
+  appId: "1:882777616957:web:11154674df673a52083054",
+  measurementId: "G-YKP344PSMQ"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

@@ -4,7 +4,7 @@
       <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">Manage Clients</h4>
+            <h4 class="title">Manage Clients <span v-b-modal.new-business style="cursor:pointer;font-size:15px;" class="fa fa-plus pull-right"> Add Business</span></h4>
             <p class="category">View Clients registered to your applications</p>
           </md-card-header>
           <md-card-content>
@@ -23,8 +23,13 @@
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <md-table-cell md-label="Name" md-sort-by="first_name">{{ item.first_name}} {{  item.last_name}}</md-table-cell>
                     <md-table-cell md-label="Organization" md-sort-by="prganization">{{ item.organization }}</md-table-cell>
+                    <md-table-cell md-label="Location" md-sort-by="prganization">{{ item.location }}</md-table-cell>
+                    <md-table-cell md-label="Status"  md-sort-by="status">
+                      <h5><b-badge :variant="item.status=='active'? 'success':'danger'">{{ item.status }}</b-badge></h5>
+                    </md-table-cell>
                     <md-table-cell md-label="Action" md-sort-by="action">  
                         <md-button class="md-dense md-raised md-primary btn-sm"  @click="setUser(item)">View</md-button>
+                        <md-button class="md-dense md-raised md-danger btn-sm" v-if="item.status!='blocked'"  @click="lc_blockUser(item)">Block</md-button>
                     </md-table-cell>
                 </md-table-row>
                 </md-table>
@@ -41,10 +46,10 @@
                         <p v-if="edit==false">{{selected_user.email}}</p> 
                         <b-input v-else type="email" v-model="selected_user.email"></b-input>
                        </div>
-                       <div class="col-md-6 mt-2">
+                       <!-- <div class="col-md-6 mt-2">
                         <h6> <b>Languages</b>  </h6>
-                       </div>
-                       <div class="col-md-6 mt-2">
+                       </div> -->
+                       <!-- <div class="col-md-6 mt-2">
                        <p v-if="edit==false">{{selected_user.languages}}</p> 
                           <select v-else style="border:1px solid #ced4da"  class="form-control" name="select-yui_3_17_2_1_1567996608600_18564-field">
                             <option value="Acholi">Acholi</option>
@@ -398,7 +403,7 @@
                             <option value="Yupik">Yupik</option>
                   
                          </select>
-                       </div>
+                       </div> -->
                        <div class="col-md-6 mt-2">
                         <h6><b>Location </b> </h6> 
                        </div>
@@ -540,12 +545,90 @@
         </md-card>
       </div>
 
-      <div
+      <!-- <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
       
-      </div>
+      </div> -->
     </div>
+    <b-modal id="new-business"  hide-footer>
+        <template v-slot:modal-header>
+          <h5 class="ml-auto mr-auto"> <b>Create New Business </b></h5>
+        </template>
+        <b-container fluid >
+          <div class="row">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">First Name*</label>
+                    <input type="text" name="" placeholder="John" v-model="businessUser.first_name" class="form-control" id="">
+                </div>
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">Last Name*</label>
+                    <input type="text" name="" placeholder="Doe" v-model="businessUser.last_name" class="form-control" id="">
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">Email*</label>
+                    <input type="text" name="" placeholder="john@gmail.com" v-model="businessUser.email" class="form-control" id="">
+                </div>
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">Phone*</label>
+                    <input type="number" min="0" name="" placeholder="+123456789" v-model="businessUser.contact" class="form-control" id="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-12 mt-3">
+                    <label for="" class="text-primary">Password*</label>
+                    <input type="text"  placeholder="Your Password" v-model="businessPassword" class="form-control" id="">
+                </div>
+                <div class="col-md-6 col-12 mt-3">
+                    <label for="" class="text-primary">Confirm Password*</label>
+                    <input type="text" name="" placeholder="Confirm Password" v-model="businessConfirm" class="form-control" id="">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">Languages*</label>
+                    <select name="" id="" class="form-control" v-model="businessUser.languages">
+                        <option value="English">English</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Bengali">Bengali</option>
+                        <option value="Urdu">Urdu</option>
+                    </select>
+                    
+                </div>
+                <div class="col-md-6 col-12">
+                    <label for="" class="text-primary">Location*</label>
+                    <select name="" id="" class="form-control" v-model="businessUser.location">
+                        <option value="New York">New York</option>
+                        <option value="Texas">Texas</option>
+                        <option value="Washington">Washington</option>
+                        <option value="Los Angeles">Los Angeles</option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-12 mt-3">
+                    <label for="" class="text-primary">Organization*</label>
+                    <input type="text" name="" placeholder="Organization" v-model="businessUser.organization" class="form-control" id="">
+                </div>
+                <div class="col-md-6 col-12 mt-3">
+                    <label for="" class="text-primary">Additional Information*</label>
+                    <!-- <textarea class="form-control" rows="1" placeholder="Write something about yourself" v-model="businessUser.about"></textarea> -->
+                    <input type="text" name="" placeholder="Tell us more.." v-model="businessUser.about" class="form-control" id="">
+
+                </div>
+                <div class="col-md-12 col-12 mt-3">
+                    <button type="submit" class="btn btn-primary btn-block" @click="navigate('business')">Sign Up</button>
+                </div>
+            </div>
+          </div> 
+        </b-container>
+        <!-- <b-container fluid class="mt-4"> -->
+          <!-- <md-button class="ml-2 md-dense md-raised md-primary pull-right">Create</md-button> -->
+          <!-- <md-button class="md-dense md-raised md-primary pull-right" @click="hide('new-business')">Cancel</md-button> -->
+        <!-- </b-container> -->
+    </b-modal>
   </div>
 </template>
 
@@ -566,73 +649,27 @@ const toLower = text => {
 import {mapGetters} from 'vuex'
 export default {
     data: () => ({
+      businessPassword:null,
+      businessConfirm: null,
+
+      businessUser: {
+        first_name: null,
+        last_name: null,
+        email: null,
+        contact: null,
+        languages: null,
+        location: null,
+        organization: null,
+        about: null,
+        type: "business",
+        status: "pending"
+      },
       search: null,
       edit:false,
       selected_user:'',
       searched: [],
       showDialog: false,
-      users: [
-        {
-          id: 1,
-          first_name: "Shawna Dubbin",
-          action: "Assistant Media Planner",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        },
-        {
-          id: 2,
-          first_name: "Odette Demageard",
-          action: "Account Coordinator",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        },
-        {
-          id: 3,
-          first_name: "Vera Taleworth",
-          action: "Community Outreach Specialist",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        },
-        {
-          id: 4,
-          first_name: "Lonnie Izkovitz",
-          action: "Operator",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        },
-        {
-          id: 5,
-          first_name: "Thatcher Stave",
-          action: "Software Test Engineer III",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        },
-        {
-          id: 6,
-          first_name: "Karim Chipping",
-          action: "Safety Technician II",
-          email:'dac@gmail.com',
-          location:'Albaquerque',
-          contact:'03058564747',
-          languages:'English (US)',
-          organization:'Crew Tours'
-        }
-      ]
+      
     }),
     watch:{
       clients(){
@@ -644,6 +681,48 @@ export default {
 
     },
     methods: {
+      navigate(type) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                let business = this.businessUser;
+                if(business.first_name == null || business.last_name == null || business.email == null || business.contact == null || business.languages == null || business.location == null || business.organization == null || business.about == null) {
+                  this.$store.commit("setNotifications",{message:"All Fields Required!",type:'error'})
+                }
+                else if(!re.test(business.email.toLowerCase())) {
+                    this.$store.commit("setNotifications",{message:"Invalid Email!",type:'error'})
+                }
+                else if(this.businessPassword == null) {
+                    this.$store.commit("setNotifications",{message:"Please Enter Password!",type:'error'})
+                }
+                else if(this.businessConfirm == null) {
+                    this.$store.commit("setNotifications",{message:"Please Confirm Your Password!!",type:'error'})
+                }
+                else if(this.businessPassword != this.businessConfirm) {
+                   this.$store.commit("setNotifications",{message:"Password Mismatch!",type:'error'})
+                }
+                else {
+                    business.password = this.businessPassword;
+                    this.$store.dispatch('createUser',business);
+                    this.businessPassword=null,
+                    this.businessConfirm=null,
+                    this.businessUser={
+                      first_name: null,
+                      last_name: null,
+                      email: null,
+                      contact: null,
+                      languages: null,
+                      location: null,
+                      organization: null,
+                      about: null,
+                      type: "business",
+                      status: "pending"
+                    }
+                }
+        },
+      lc_blockUser(item){
+        this.$bvModal.hide('modal-1')	
+        console.log(item)
+        this.$store.dispatch("blockUser",item) 
+      },
       lc_updateServiceProvider () { 
         this.hide()
         this.$store.dispatch("updateUsers",this.selected_user)
