@@ -6,7 +6,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
-import firebase from 'firebase'
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 import * as VueGoogleMaps from 'vue2-google-maps'
 import 'native-toast/dist/native-toast.css'
 import FullCalendar from 'vue-full-calendar'
@@ -16,19 +17,18 @@ import 'native-toast/dist/native-toast.css';
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import VueStripeCheckout from 'vue-stripe-checkout'
-import './registerServiceWorker'
+// import './registerServiceWorker'
 import VueQuill from 'vue-quill'
 
 router.beforeEach((to, from, next) => {
   const businessAuth = to.matched.some(x => x.meta.businessAuth)
    //console.log(Vals) requiresAuth &&requiresAuth &&
-  if ( businessAuth &&  !localStorage.getItem("loggedUser")) {
-
+  if (businessAuth && !localStorage.getItem("loggedUser")) {
       next('/login')
   } else if (businessAuth && localStorage.getItem("loggedUser")) {
       const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
       const userType = loggedUser.type;
-      if(userType.toLowerCase() == 'business') {
+      if(userType.toLowerCase() === 'business') {
         next()
       }
       else {
@@ -43,13 +43,12 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
    //console.log(Vals) requiresAuth &&requiresAuth &&
-  if ( requiresAuth &&  !localStorage.getItem("loggedUser")) {
-
+  if (requiresAuth && !localStorage.getItem("loggedUser")) {
       next('/login')
   } else if (requiresAuth && localStorage.getItem("loggedUser")) {
       const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
       const userType = loggedUser.type;
-      if(userType.toLowerCase() == 'interpreter') {
+      if(userType.toLowerCase() === 'interpreter') {
         next()
       }
       else {
@@ -103,23 +102,24 @@ var firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
-// Add the public key generated from the console here.
-messaging.usePublicVapidKey("BC405fjuKa-r9JOJUbPmHTCL_Og4_BhdDBPFySt09ddpbQODl5_iSGFeauqW2Uy7_MSMcMzNoPMwclWiGJ-7XkA");
-Notification.requestPermission().then((permission) => {
-  if (permission === 'granted') {
-    console.log('Notification permission granted.');
-    
-    // TODO(developer): Retrieve an Instance ID token for use with FCM.
-    // ...
-  } else {
-    console.log('Unable to get permission to notify.');
-  }
-});
 
+if (firebase.messaging.isSupported()) {
+  const messaging = firebase.messaging();
+// Add the public key generated from the console here.
+  messaging.usePublicVapidKey("BC405fjuKa-r9JOJUbPmHTCL_Og4_BhdDBPFySt09ddpbQODl5_iSGFeauqW2Uy7_MSMcMzNoPMwclWiGJ-7XkA");
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+
+      // TODO(developer): Retrieve an Instance ID token for use with FCM.
+      // ...
+    } else {
+      console.log('Unable to get permission to notify.');
+    }
+  });
 // Get Instance ID token. Initially this makes a network call, once retrieved
 // subsequent calls to getToken will return from cache.
-messaging.getToken().then((currentToken) => {
+  messaging.getToken().then((currentToken) => {
     console.log(currentToken)
     if(currentToken!=null && localStorage.getItem("token")==null) {
       localStorage.setItem("token",currentToken)
@@ -130,10 +130,10 @@ messaging.getToken().then((currentToken) => {
       localStorage.setItem("token",currentToken)
     }
 
-}).catch((err) => {
-  console.log('An error occurred while retrieving token. ', err);
-  
-});
+  }).catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+  });
+}
 
 window.firebase = firebase;
 

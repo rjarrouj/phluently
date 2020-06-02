@@ -1,0 +1,7 @@
+/.idea/
+/admin/yarn.lock
+/main/yarn.lock
+/admin/node_modules/
+/main/node_modules/
+/main/package-lock.json
+/admin/package-lock.json

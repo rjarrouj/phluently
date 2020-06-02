@@ -1,28 +1,30 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from './views/Home.vue'
-import Login from './views/Login.vue'
-import Register from './views/Register.vue'
-import ForgotPassword from './views/ForgotPassword.vue'
-import Privacy from './views/Privacy.vue'
-import Terms from './views/Terms.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from './views/Home.vue';
+import Login from './views/Login.vue';
+import Register from './views/Register.vue';
+import ForgotPassword from './views/ForgotPassword.vue';
+import Privacy from './views/Privacy.vue';
+import Terms from './views/Terms.vue';
 
-import Dashboard from './views/interpreter/Dashboard.vue'
-import Jobs from './views/interpreter/Jobs.vue'
-import Profile from './views/interpreter/Profile.vue'
-import Schedule from './views/interpreter/Schedule.vue'
-import JobDetails from './views/interpreter/JobDetails.vue'
-import InterpreterChats from './views/interpreter/Chat.vue'
+import Dashboard from './views/interpreter/Dashboard.vue';
+import Jobs from './views/interpreter/Jobs.vue';
+import Profile from './views/interpreter/Profile.vue';
+import Schedule from './views/interpreter/Schedule.vue';
+import JobDetails from './views/interpreter/JobDetails.vue';
+import InterpreterChats from './views/interpreter/Chat.vue';
 
-import BusinessDashboard from './views/business/Dashboard.vue'
-import BusinessJobs from './views/business/Jobs.vue'
-import BusinessProfile from './views/business/Profile.vue'
-import BusinessSchedule from './views/business/Schedule.vue'
-import BusinessJobDetails from './views/business/JobDetails.vue'
-import BusinessChats from './views/business/Chat.vue'
+import BusinessDashboard from './views/business/Dashboard.vue';
+import BusinessJobs from './views/business/Jobs.vue';
+import BusinessProfile from './views/business/Profile.vue';
+import BusinessSchedule from './views/business/Schedule.vue';
+import BusinessJobDetails from './views/business/JobDetails.vue';
+import BusinessChats from './views/business/Chat.vue';
 
+const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+console.log(loggedUser)
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -124,7 +126,7 @@ const routes = [
       businessAuth: true,
     }
   },
-  
+
   {
     path: '/business/schedule',
     name: 'schedule',
